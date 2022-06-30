@@ -17,6 +17,7 @@ const register = (req, res) => {
   const newUser = new userSchema({
     usernameDB: usernameFromUser,
     emailDB: emailFromUser,
+    phoneNumberDB: phoneNumberFromUser,
     passwordDB: hashedPassword,
   });
   newUser.save(async (error) => {
