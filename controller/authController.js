@@ -4,7 +4,13 @@ const jwt = require("jsonwebtoken");
 
 //REGISTER FUNCTION THAT REGISTERS NEW USERS
 const register = (req, res) => {
-  const { usernameFromUser, emailFromUser, passwordFromUser } = req.body;
+  const {
+    usernameFromUser,
+    emailFromUser,
+    passwordFromUser,
+    phoneNumberFromUser,
+    userRole,
+  } = req.body;
 
   //ACCORDING TO BCRYPT DOCUMENTATION, YOU TURN A PLAIN PASSWORD TO A HASHED PASSWORD
   //BY USING THE NEXT TWO LINES OF CODE WHERE THE 'passwordFromUser' IS THE PASSWORD GOTTEN FROM
@@ -19,6 +25,7 @@ const register = (req, res) => {
     emailDB: emailFromUser,
     phoneNumberDB: phoneNumberFromUser,
     passwordDB: hashedPassword,
+    roleDB: userRole,
   });
   newUser.save(async (error) => {
     if (error) {
@@ -32,11 +39,10 @@ const register = (req, res) => {
         status: "user registered to database successfully",
         details: {
           DBusername: user.usernameDB,
-          UserInputusername: usernameFromUser,
           DBemail: user.emailDB,
-          userInputEmail: emailFromUser,
           DBpassword: user.passwordDB,
-          userInputpassword: passwordFromUser,
+          DBphoneNumber: user.phoneNumberDB,
+          DBrole: user.roleDB,
         },
       });
     }
@@ -88,7 +94,7 @@ const general = (req, res) => {
 
 //THIS FUNCTION IS CALLED WHEN A GET REQUEST IS MADE TO THE /restricted ROUTE
 //IT IS ONLY CALLED IF THE USER PASSES THE REQUIREMENTS IN THE check function
-//IN THE authMiddleware FILE ONLY USERS WITH THE TOKEN SUPPLIED IN THEIR HEADER 
+//IN THE authMiddleware FILE ONLY USERS WITH THE TOKEN SUPPLIED IN THEIR HEADER
 //DURING REQUEST CAN ACCESS
 const restricted = (req, res) => {
   console.log(req.headers.authorization);

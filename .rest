@@ -3,7 +3,9 @@ Content-Type: application/json
 authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im1hcmN1cyIsImlhdCI6MTY1NjYwNDEyMH0.tiOicUIgRaqz4RA0wxmUR6ZS6HVTmhhXVch8LUdwj-Q
 
 {
-    "usernameFromUser":"rainbow",
-    "emailFromUser":"rondot@gmail.com",
-    "passwordFromUser":"moon"
+    "usernameFromUser":"nst",
+    "emailFromUser":"rondon@gmail.com",
+    "phoneNumberFromUser":"0987765545",
+    "passwordFromUser":"password",
+    "userRole":"member"
 }
