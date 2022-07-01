@@ -9,6 +9,7 @@ const register = (req, res) => {
   const newUser = new userSchema({
     usernameDB: usernameFromUser,
     emailDB: emailFromUser,
+    phoneNumberDB: phoneNumberFromUser,
     passwordDB: hashedPassword,
   });
   console.log(req.body);
