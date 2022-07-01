@@ -4,7 +4,7 @@ authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im1hc
 
 {
     "usernameFromUser":"nst",
-    "emailFromUser":"rondon@gmail.com",
+    "emailFromUser":"rooky@gmail.com",
     "phoneNumberFromUser":"0987765545",
     "passwordFromUser":"password",
     "userRole":"member"

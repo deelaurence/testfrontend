@@ -27,7 +27,7 @@ const user = new Schema({
     required: true,
     minlength: 7,
     validate(value){
-      if (value.toLowerCase().includes('password')){
+      if (value.lenght < 7){
         console.log ('Use Another Password');
       }
     }
