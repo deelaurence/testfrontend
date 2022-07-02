@@ -1,47 +1,34 @@
 const jwt = require("jsonwebtoken");
 const { userSchema } = require("../models/userModel");
-
-//THIS IS A MIDDLEWARE FUNCTION THAT IS PASSED INTO THE ROUTE THAT CHECKS
-//IF THE USER CAN ACCESS A RESTRICTED ROUTE
-const check = (req, res, next) => {
-    //INSIDE THE REQUEST HEADERS IT IS EXPECTED THAT LOGGED IN USERS
-    //SHOULD HAVE AN AUTHORIZATION(THE jwt token generated on user-login) 
-  if (req.headers.authorization) {
-    // console.log(req.headers.authorization);
-    // console.log(req.headers);
-
-    // THE TOKEN CONSISTS OF DIFFERENT PARTS(CHECK JWT DOCUMENTATION)
-    //THE .split METHOD SPLITS IT AND RETURNS AN ARRAY, 
-    
-    if (req.headers.authorization.split(" ")[0] == "Bearer") {
-      //THE TOKEN IS THE SECOND ITEM IN THE ARRAY
+//a middleware that checks if users are logged in
+const check = async (req, res, next) => {
+  //logged in user should have authorization key in headers
+  try {
+    if (req.headers.authorization) {
       const token = req.headers.authorization.split(" ")[1];
-
-      jwt.verify(token, process.env.jwtkey, async (err, payload) => {
-        if (err) {
-          console.log(err);
-        } else {
-          const user = await userSchema.findOne({
-            usernameDB: payload.username,
+      const verifyToken = jwt.verify(token, process.env.jwtkey);
+      if (verifyToken) {
+        const user = await userSchema.findOne({
+          usernameDB: verifyToken.username,
+        });
+        console.log(verifyToken);
+        if (user && user.loggedIn == true) {
+          res.json({
+            message: `welcome to your profile, ${verifyToken.username}`,
+            presentInDatabase: true,
           });
-          if (user) {
-            res.json({
-              username: payload.username,
-              presentInDatabase: true,
-              tokenVerified: true,
-            });
-            // THE NEXT FUNCTION IS CALLED WHEN ALL THE CRITERIA IS MET
-            next();
-          } else {
-            return res.send("username not found in the database");
-          }
+          next();
+        } else {
+          return res.send("please login to access this route");
         }
-      });
+      } else {
+        res.send("token not verified");
+      }
     } else {
-      res.send("token type not Bearer");
+      res.send("provide authorization key");
     }
-  } else {
-    res.send("you are not authorized");
+  } catch (err) {
+    console.log(err);
   }
 };
 
