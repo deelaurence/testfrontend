@@ -1,6 +1,7 @@
 const { userSchema } = require("../models/userModel");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const path = require("path");
 
 //REGISTER FUNCTION THAT REGISTERS NEW USERS
 const register = async (req, res) => {
@@ -60,10 +61,12 @@ const register = async (req, res) => {
 const login = async (req, res) => {
   try {
     const { emailFromUser, passwordFromUser } = req.body;
+    console.log(req.body);
+
     const user = await userSchema.findOne({ emailDB: emailFromUser });
     //TO LOGIN, USE BCRYPT TO COMPARE THE PASSWORD SUPPLIED BY USER TO THE PASSWORD
     //FETCHED FROM THE DATABASE
-    if (!user) return res.status(404).send("user does not exist");
+    if (!user) return res.status(400).send("user does not exist");
     const verifyCredentials = bcrypt.compareSync(
       passwordFromUser,
       user.passwordDB
@@ -83,6 +86,7 @@ const login = async (req, res) => {
       );
 
       res.send(addTokenToDB);
+      // res.sendFile(path.resolve(__dirname, "../public/loggedIn.html"));
     } else {
       res.send("wrong username or password");
     }

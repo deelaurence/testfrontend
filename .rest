@@ -1,10 +1,10 @@
-GET http://localhost:3000/logout
+POST  http://localhost:3000/
 Content-Type: application/json
 authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRpdG8tZGVibyIsImlhdCI6MTY1Njc0NzgzMH0.Q1hhE4q3ung308sydQljOgRzg7g0kAyIk5cpFkdC7No
 
 {
-    "usernameFromUser":"tito",
-    "emailFromUser":"larryggs@gmail.com",
+    "usernameFromUser":"koy",
+    "emailFromUser":"larrygs@gmail.com",
     "phoneNumberFromUser":"09090",
     "passwordFromUser":"ridiculous",
     "userRole":"member"
