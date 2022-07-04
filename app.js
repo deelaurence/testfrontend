@@ -15,18 +15,23 @@ app.use(express.json());
 app.use(express.static("public"));
 
 //ROUTE
-app.use("/", authRoute);
+app.use("/api/v1/", authRoute);
 
 //test auth with frontend
 const path = require("path");
 app.use(upload.array());
-app.get("/frontend", (req, res) => {
+app.get("/login", (req, res) => {
   res.sendFile(path.resolve(__dirname, "./public/index.html"));
+});
+app.get("/register", (req, res) => {
+  res.sendFile(path.resolve(__dirname, "./public/register.html"));
 });
 app.get("/welcome", (req, res) => [
   res.sendFile(path.resolve(__dirname, "./public/loggedin.html")),
 ]);
 
-app.listen(3000, function () {
-  console.log("listening on port 3000");
+let port = process.env.port || 3000;
+
+app.listen(port, function () {
+  console.log("listening on port", port);
 });
