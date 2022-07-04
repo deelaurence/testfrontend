@@ -3,7 +3,7 @@ require("dotenv").config();
 
 // const mongoDB = process.env.ATLAS_URI
 //when testing with local compass
-const mongoDB = "mongodb://localhost:27017";
+const mongoDB = "mongodb://localhost:27017/test-e-commerce";
 
 const connectDB = mongoose
   .connect(mongoDB, {

@@ -10,17 +10,20 @@ const register = async (req, res) => {
       usernameFromUser,
       emailFromUser,
       passwordFromUser,
-      phoneNumberFromUser,
-      userRole,
+      phoneNumberFromUser
     } = req.body;
     //validate user input
     if (!(emailFromUser && passwordFromUser && phoneNumberFromUser)) {
-      return res.status(400).send("All input is required");
+      return res.status(400).json({
+        status: "All input is required"
+      });
     }
     //check if user already exist in database
     const oldUser = await userSchema.findOne({ emailDB: emailFromUser });
     if (oldUser) {
-      return res.status(409).send("user already exists, please Login instead");
+      return res.status(409).json({
+        status: "user already exists, please Login instead"
+      });
     }
     //ACCORDING TO BCRYPT DOCUMENTATION, YOU TURN A PLAIN PASSWORD TO A HASHED PASSWORD
     //BY USING THE NEXT TWO LINES OF CODE WHERE THE 'passwordFromUser' IS THE PASSWORD GOTTEN FROM
@@ -35,10 +38,10 @@ const register = async (req, res) => {
       emailDB: emailFromUser.toLowerCase(),
       phoneNumberDB: phoneNumberFromUser,
       passwordDB: hashedPassword,
-      roleDB: userRole,
+      roleDB: 'user'
     });
 
-    await newUser.save();
+    const createdUser = await newUser.save();
 
     //generate token
     const token = jwt.sign(
@@ -46,14 +49,15 @@ const register = async (req, res) => {
       process.env.jwtkey
     );
 
-    newUser.tokenDB = token;
+    createdUser.tokenDB = token;
 
     res.status(201).json({
       status: "user registered successfully to database",
-      details: newUser,
+      details: createdUser
     });
   } catch (error) {
     console.log(error);
+    res.status(400).json({message: "An error has occured."});
   }
 };
 
@@ -66,7 +70,7 @@ const login = async (req, res) => {
     const user = await userSchema.findOne({ emailDB: emailFromUser });
     //TO LOGIN, USE BCRYPT TO COMPARE THE PASSWORD SUPPLIED BY USER TO THE PASSWORD
     //FETCHED FROM THE DATABASE
-    if (!user) return res.status(400).send("user does not exist");
+    if (!user) res.status(400).json({message: "user does not exist"});
     const verifyCredentials = bcrypt.compareSync(
       passwordFromUser,
       user.passwordDB
@@ -76,22 +80,24 @@ const login = async (req, res) => {
       //jwtkey is a random string stored in .env
       const findUser = await userSchema.findOne({ emailDB: emailFromUser });
       const token = jwt.sign(
-        { username: findUser.usernameDB },
+        { userId: findUser._id, username: findUser.usernameDB },
         process.env.jwtkey
       );
       let addTokenToDB = await userSchema.findOneAndUpdate(
         { emailDB: emailFromUser },
-        { tokenDB: token, loggedIn: true },
+        { loggedIn: true },
         { new: true }
       );
 
-      res.send(addTokenToDB);
+      // You are not expected to store json web tokens on your database
+      res.json({status: "Successful", token});
       // res.sendFile(path.resolve(__dirname, "../public/loggedIn.html"));
     } else {
-      res.send("wrong username or password");
+      res.status(400).json({message: "wrong username or password"});
     }
   } catch (error) {
     console.log(error);
+    res.json({message: "Something went"});
   }
 };
 //THIS FUNCTION ACESSED BY EVERYBODY
