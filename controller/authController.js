@@ -10,19 +10,19 @@ const register = async (req, res) => {
       usernameFromUser,
       emailFromUser,
       passwordFromUser,
-      phoneNumberFromUser
+      phoneNumberFromUser,
     } = req.body;
     //validate user input
     if (!(emailFromUser && passwordFromUser && phoneNumberFromUser)) {
       return res.status(400).json({
-        status: "All input is required"
+        status: "All input is required",
       });
     }
     //check if user already exist in database
     const oldUser = await userSchema.findOne({ emailDB: emailFromUser });
     if (oldUser) {
       return res.status(409).json({
-        status: "user already exists, please Login instead"
+        status: "user already exists, please Login instead",
       });
     }
     //ACCORDING TO BCRYPT DOCUMENTATION, YOU TURN A PLAIN PASSWORD TO A HASHED PASSWORD
@@ -38,7 +38,7 @@ const register = async (req, res) => {
       emailDB: emailFromUser.toLowerCase(),
       phoneNumberDB: phoneNumberFromUser,
       passwordDB: hashedPassword,
-      roleDB: 'user'
+      roleDB: "user",
     });
 
     const createdUser = await newUser.save();
@@ -53,11 +53,12 @@ const register = async (req, res) => {
 
     res.status(201).json({
       status: "user registered successfully to database",
-      details: createdUser
+      details: createdUser,
+      token,
     });
   } catch (error) {
     console.log(error);
-    res.status(400).json({message: "An error has occured."});
+    res.status(400).json({ message: "An error has occured." });
   }
 };
 
@@ -70,7 +71,7 @@ const login = async (req, res) => {
     const user = await userSchema.findOne({ emailDB: emailFromUser });
     //TO LOGIN, USE BCRYPT TO COMPARE THE PASSWORD SUPPLIED BY USER TO THE PASSWORD
     //FETCHED FROM THE DATABASE
-    if (!user) res.status(400).json({message: "user does not exist"});
+    if (!user) res.status(400).json({ message: "user does not exist" });
     const verifyCredentials = bcrypt.compareSync(
       passwordFromUser,
       user.passwordDB
@@ -83,6 +84,7 @@ const login = async (req, res) => {
         { userId: findUser._id, username: findUser.usernameDB },
         process.env.jwtkey
       );
+      console.log(token);
       let addTokenToDB = await userSchema.findOneAndUpdate(
         { emailDB: emailFromUser },
         { loggedIn: true },
@@ -90,16 +92,28 @@ const login = async (req, res) => {
       );
 
       // You are not expected to store json web tokens on your database
-      res.json({status: "Successful", token});
+      res.json({ status: "Successful", token });
       // res.sendFile(path.resolve(__dirname, "../public/loggedIn.html"));
     } else {
-      res.status(400).json({message: "wrong username or password"});
+      res.status(400).json({ message: "wrong username or password" });
     }
   } catch (error) {
     console.log(error);
-    res.json({message: "Something went"});
   }
 };
+
+const getUsername = async (req, res) => {
+  const { jwtFromFrontend } = req.body;
+  console.log(jwtFromFrontend);
+
+  const payload = jwt.verify(jwtFromFrontend, process.env.jwtkey);
+  console.log(payload);
+  console.log(payload.username);
+  const user = await userSchema.findOne({ usernameDB: payload.username });
+  console.log(user);
+  res.json({ user });
+};
+
 //THIS FUNCTION ACESSED BY EVERYBODY
 const general = (req, res) => {
   res.send("general");
@@ -126,4 +140,4 @@ const logout = async (req, res) => {
     res.status(200).send(`${user.usernameDB} logged out`);
   }
 };
-module.exports = { register, login, general, restricted, logout };
+module.exports = { register, login, general, restricted, logout, getUsername };

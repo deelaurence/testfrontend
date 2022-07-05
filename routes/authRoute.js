@@ -8,15 +8,16 @@ const {
   general,
   restricted,
   logout,
+  getUsername,
 } = require("../controller/authController");
 
-router.post("/", register);
+router.post("/register", register);
 
 router.post("/login", login);
-
+router.post("/getusername", getUsername);
 
 router.get("/general", general);
-router.get("/restricted", check, restricted);
+router.post("/restricted", check, restricted);
 router.get("/logout", logout);
 
 module.exports = router;

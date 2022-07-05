@@ -1,40 +1,42 @@
 const mongoose = require("mongoose");
-const validator = require('validator');
-const bcrypt = require('bcrypt');
+const validator = require("validator");
+const bcrypt = require("bcrypt");
 
 const ObjectID = mongoose.Schema.Types.ObjectId;
 
-const item = new mongoose.Schema({
-   owner: {
-    type: ObjectID,
-    required: true,
-    ref: 'User'
-   },
+const item = new mongoose.Schema(
+  {
+    owner: {
+      type: String,
+      required: false,
+    },
 
-   name: {
-    type: String,
-    required: true,
-    trim: true
-   },
+    name: {
+      type: String,
+      required: false,
+      trim: true,
+    },
 
-   description: {
-    type: String,
-    required: true,
-   },
+    description: {
+      type: String,
+      required: false,
+    },
 
-   category: {
-    type: String,
-    required: true,
-   },
+    category: {
+      type: String,
+      required: false,
+    },
 
-   price: {
-    type: Number,
-    required: true,
-   }
-  },{
-    timestamps: true
-});
+    price: {
+      type: Number,
+      required: false,
+    },
+  },
+  {
+    timestamps: true,
+  }
+);
 
-const itemSchema = mongoose.model("Items",item);
+const itemSchema = mongoose.model("Items", item);
 
 module.exports = { itemSchema };

@@ -14,7 +14,7 @@ const check = async (req, res, next) => {
         console.log(verifyToken);
         if (user && user.loggedIn == true) {
           res.json({
-            message: `welcome to your profile, ${verifyToken.username}`,
+            message: `${verifyToken.username}`,
             presentInDatabase: true,
           });
           next();
