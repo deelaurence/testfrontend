@@ -20,6 +20,7 @@ app.use(express.static("public"));
 app.use("/api/v1/", authRoute);
 
 //test auth with frontend
+
 const path = require("path");
 app.use(upload.array());
 app.get("/", (req, res) => {
@@ -38,8 +39,12 @@ app.get("/welcome", (req, res) => {
 app.get("/products", (req, res) => {
   res.sendFile(path.resolve(__dirname, "./public/products.html"));
 });
+
+//required check to be sure you are registerd/loggged 
 const { check } = require("./middleware/loginMiddleware");
 
+//to test run if the req.headers.authorization is sucessfully
+//supplied from the frontend
 app.post("/buy", check, async (req, res) => {
   console.log(req.headers.authorization);
 });

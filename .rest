@@ -1,4 +1,4 @@
-POST  http://localhost:3000/
+POST  http://localhost:3000/ap1/v1register
 Content-Type: application/json
 authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRpdG8tZGVibyIsImlhdCI6MTY1Njc0NzgzMH0.Q1hhE4q3ung308sydQljOgRzg7g0kAyIk5cpFkdC7No
 

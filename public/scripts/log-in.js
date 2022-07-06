@@ -25,6 +25,11 @@ loginButton.addEventListener("click", async function (e) {
       location.assign("/loggedin.html");
     } else {
       alert(data.message);
+      const registerPrompt = document.querySelector("#register-prompt");
+      registerPrompt.innerHTML = "not yet registered?";
+      registerPrompt.addEventListener("click", () => {
+        location.assign("/register.html");
+      });
     }
   }
 });
